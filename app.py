@@ -1,234 +1,136 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect
 import sqlite3
 import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-app.secret_key = "hydro_secret_key"
-
-UPLOAD_FOLDER = 'static'
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+UPLOAD_FOLDER = "static"
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
-# DATABASE CONNECTION
+# CREATE DATABASE
+def init_db():
+    conn = sqlite3.connect("inventory.db")
+    cursor = conn.cursor()
 
-conn = sqlite3.connect('inventory.db', check_same_thread=False)
-
-cursor = conn.cursor()
-
-
-# PRODUCTS TABLE
-
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS products (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT,
-    description TEXT,
-    size TEXT,
-    image TEXT
-)
-''')
-
-
-# USERS TABLE
-
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT,
-    password TEXT
-)
-''')
-
-conn.commit()
-
-
-# CREATE DEFAULT LOGIN
-
-cursor.execute(
-    "SELECT * FROM users WHERE username=?",
-    ("admin",)
-)
-
-user = cursor.fetchone()
-
-if not user:
-
-    cursor.execute(
-        "INSERT INTO users (username, password) VALUES (?, ?)",
-        ("admin", "1234")
+    cursor.execute("""
+    CREATE TABLE IF NOT EXISTS products (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT,
+        description TEXT,
+        size TEXT,
+        image TEXT
     )
+    """)
 
     conn.commit()
+    conn.close()
 
 
-# LOGIN PAGE
+init_db()
 
-@app.route('/login', methods=['GET', 'POST'])
+
+# HOME
+@app.route("/")
+def home():
+    return redirect("/login")
+
+
+# LOGIN
+@app.route("/login", methods=["GET", "POST"])
 def login():
 
-    if request.method == 'POST':
+    if request.method == "POST":
 
-        username = request.form['username']
-        password = request.form['password']
+        username = request.form.get("username")
+        password = request.form.get("password")
 
-        cursor.execute(
-            "SELECT * FROM users WHERE username=? AND password=?",
-            (username, password)
-        )
+        if username == "admin" and password == "admin":
+            return redirect("/dashboard")
 
-        user = cursor.fetchone()
-
-        if user:
-
-            session['user'] = username
-
-            return redirect('/')
-
-    return render_template('login.html')
+    return render_template("login.html")
 
 
-# LOGOUT
+# DASHBOARD
+@app.route("/dashboard")
+def dashboard():
 
-@app.route('/logout')
-def logout():
+    conn = sqlite3.connect("inventory.db")
+    cursor = conn.cursor()
 
-    session.pop('user', None)
-
-    return redirect('/login')
-
-
-# HOME PAGE
-
-@app.route('/')
-def home():
-
-    if 'user' not in session:
-        return redirect('/login')
-
-    search = request.args.get('search')
-
-    if search:
-
-        cursor.execute(
-            "SELECT * FROM products WHERE name LIKE ?",
-            ('%' + search + '%',)
-        )
-
-    else:
-
-        cursor.execute(
-            "SELECT * FROM products"
-        )
-
+    cursor.execute("SELECT * FROM products")
     products = cursor.fetchall()
 
-    return render_template(
-        'dashboard.html',
-        products=products
-    )
+    conn.close()
+
+    return render_template("dashboard.html", products=products)
 
 
 # ADD PRODUCT
+@app.route("/add", methods=["GET", "POST"])
+def add_product():
 
-@app.route('/add-item', methods=['GET', 'POST'])
-def add_item():
+    if request.method == "POST":
 
-    if 'user' not in session:
-        return redirect('/login')
+        name = request.form.get("name")
+        description = request.form.get("description")
+        size = request.form.get("size")
 
-    if request.method == 'POST':
+        image = request.files["image"]
 
-        name = request.form['name']
-        description = request.form['description']
-        size = request.form['size']
-
-        image = request.files['image']
+        filename = ""
 
         if image:
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
 
-            image.save(
-                os.path.join(
-                    app.config['UPLOAD_FOLDER'],
-                    image.filename
-                )
-            )
+        conn = sqlite3.connect("inventory.db")
+        cursor = conn.cursor()
 
-            cursor.execute(
-                "INSERT INTO products (name, description, size, image) VALUES (?, ?, ?, ?)",
-                (name, description, size, image.filename)
-            )
+        cursor.execute("""
+        INSERT INTO products (name, description, size, image)
+        VALUES (?, ?, ?, ?)
+        """, (name, description, size, filename))
 
-            conn.commit()
+        conn.commit()
+        conn.close()
 
-            return render_template(
-                'product.html',
-                image=image.filename,
-                name=name,
-                description=description,
-                size=size
-            )
+        return redirect("/dashboard")
 
-    return render_template('add_item.html')
+    return render_template("add_item.html")
+
+
+# PRODUCT DETAILS
+@app.route("/product/<int:id>")
+def product(id):
+
+    conn = sqlite3.connect("inventory.db")
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT * FROM products WHERE id=?", (id,))
+    product = cursor.fetchone()
+
+    conn.close()
+
+    return render_template("product.html", product=product)
 
 
 # DELETE PRODUCT
-
-@app.route('/delete/<int:id>')
+@app.route("/delete/<int:id>")
 def delete_product(id):
 
-    if 'user' not in session:
-        return redirect('/login')
+    conn = sqlite3.connect("inventory.db")
+    cursor = conn.cursor()
 
-    cursor.execute(
-        "DELETE FROM products WHERE id=?",
-        (id,)
-    )
+    cursor.execute("DELETE FROM products WHERE id=?", (id,))
 
     conn.commit()
+    conn.close()
 
-    return redirect('/')
-
-
-# EDIT PRODUCT
-
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
-def edit_product(id):
-
-    if 'user' not in session:
-        return redirect('/login')
-
-    if request.method == 'POST':
-
-        name = request.form['name']
-        description = request.form['description']
-        size = request.form['size']
-
-        cursor.execute(
-            """
-            UPDATE products
-            SET name=?, description=?, size=?
-            WHERE id=?
-            """,
-            (name, description, size, id)
-        )
-
-        conn.commit()
-
-        return redirect('/')
-
-    cursor.execute(
-        "SELECT * FROM products WHERE id=?",
-        (id,)
-    )
-
-    product = cursor.fetchone()
-
-    return render_template(
-        'edit_product.html',
-        product=product
-    )
+    return redirect("/dashboard")
 
 
-if __name__ == '__main__':
+# RUN
+if __name__ == "__main__":
     app.run(debug=True)
