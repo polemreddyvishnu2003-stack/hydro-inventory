@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Add Product</title>
+
+<style>
+
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Arial;
+}
+
+.form-box{
+    width:400px;
+    margin:50px auto;
+    background:#1e293b;
+    padding:30px;
+    border-radius:10px;
+}
+
+h1{
+    color:#facc15;
+    text-align:center;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    background:#25D366;
+    border:none;
+    color:white;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="form-box">
+
+<h1>Add Product</h1>
+<input type="text" name="name" placeholder="Product Name" required>
+
+<input type="text" name="description" placeholder="Product Description" required>
+
+<input type="text" name="size" placeholder="Size" required>
+
+<form method="POST" enctype="multipart/form-data">
+
+<input type="file" name="image" required>
+
+<button type="submit">
+Upload Product
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
