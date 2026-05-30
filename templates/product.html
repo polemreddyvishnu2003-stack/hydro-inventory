@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Product</title>
+
+<style>
+
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+}
+
+img{
+    width:300px;
+    margin-top:30px;
+    border-radius:10px;
+}
+
+button{
+    padding:12px 20px;
+    background:#25D366;
+    border:none;
+    color:white;
+    margin-top:20px;
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>HYDRO SPARES DISTRIBUTORS</h1>
+
+<img src="{{ url_for('static', filename=image) }}">
+
+<h2>{{ name }}</h2>
+
+<p>{{ description }}</p>
+
+<p>Size: {{ size }}</p>
+
+<button onclick="shareWhatsApp()">
+Share on WhatsApp
+</button>
+
+<script>
+
+function shareWhatsApp(){
+
+    let message =
+    "HYDRO SPARES DISTRIBUTORS%0A%0A" +
+    "Industrial hydraulic component%0A%0A" +
+    window.location.href;
+
+    window.open(
+        "https://wa.me/?text=" + message,
+        "_blank"
+    );
+}
+
+</script>
+
+</body>
+</html>
