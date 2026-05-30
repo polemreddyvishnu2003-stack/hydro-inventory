@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>HYDRO SPARES DISTRIBUTORS</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+}
+
+.navbar{
+    background:#111827;
+    padding:20px;
+    color:#facc15;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.container{
+    padding:20px;
+}
+
+.top-bar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+input{
+    padding:12px;
+    width:300px;
+}
+
+button{
+    padding:10px 16px;
+    border:none;
+    color:white;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+.search-btn{
+    background:#2563eb;
+}
+
+.add-btn{
+    background:#22c55e;
+    text-decoration:none;
+    padding:12px 18px;
+    color:white;
+    border-radius:5px;
+}
+
+.edit-btn{
+    background:#f59e0b;
+}
+
+.delete-btn{
+    background:#ef4444;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    background:#1e293b;
+}
+
+table th, table td{
+    padding:15px;
+    border-bottom:1px solid #334155;
+    text-align:center;
+}
+
+img{
+    border-radius:8px;
+}
+
+a{
+    text-decoration:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+HYDRO SPARES DISTRIBUTORS
+</div>
+
+<div class="container">
+
+<div class="top-bar">
+
+<form method="GET">
+
+<input
+type="text"
+name="search"
+placeholder="Search Products..."
+>
+
+<button class="search-btn" type="submit">
+Search
+</button>
+
+</form>
+
+<a class="add-btn" href="/add-item">
+Add Product
+</a>
+
+</div>
+
+<table>
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>IMAGE</th>
+<th>NAME</th>
+<th>DESCRIPTION</th>
+<th>SIZE</th>
+<th>ACTIONS</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for product in products %}
+
+<tr>
+
+<td>{{ product[0] }}</td>
+
+<td>
+<img
+src="{{ url_for('static', filename=product[4]) }}"
+width="80">
+</td>
+
+<td>{{ product[1] }}</td>
+
+<td>{{ product[2] }}</td>
+
+<td>{{ product[3] }}</td>
+
+<td>
+
+<a href="/edit/{{ product[0] }}">
+
+<button class="edit-btn">
+Edit
+</button>
+
+</a>
+
+<a href="/delete/{{ product[0] }}">
+
+<button class="delete-btn">
+Delete
+</button>
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</body>
+</html>
