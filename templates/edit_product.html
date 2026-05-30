@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>Edit Product</title>
+
+<style>
+
+body{
+    background:#0f172a;
+    font-family:Arial;
+    color:white;
+}
+
+.form-box{
+    width:400px;
+    margin:50px auto;
+    background:#1e293b;
+    padding:30px;
+    border-radius:10px;
+}
+
+h1{
+    text-align:center;
+    color:#facc15;
+}
+
+input{
+    width:100%;
+    padding:12px;
+    margin-top:15px;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    margin-top:20px;
+    background:#25D366;
+    border:none;
+    color:white;
+    cursor:pointer;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="form-box">
+
+<h1>Edit Product</h1>
+
+<form method="POST">
+
+<input
+type="text"
+name="name"
+value="{{ product[1] }}"
+required
+>
+
+<input
+type="text"
+name="description"
+value="{{ product[2] }}"
+required
+>
+
+<input
+type="text"
+name="size"
+value="{{ product[3] }}"
+required
+>
+
+<button type="submit">
+Update Product
+</button>
+
+</form>
+
+</div>
+
+</body>
+</html>
