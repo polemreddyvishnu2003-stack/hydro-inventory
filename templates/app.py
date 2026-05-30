@@ -82,8 +82,12 @@ def add_item():
 
         if image_file and image_file.filename:
             filename = secure_filename(image_file.filename)
+
             image_file.save(
-                os.path.join(app.config["UPLOAD_FOLDER"], filename)
+                os.path.join(
+                    app.config["UPLOAD_FOLDER"],
+                    filename
+                )
             )
 
         conn = connect_db()
@@ -154,6 +158,28 @@ def edit_product(id):
 
     return render_template(
         "edit_product.html",
+        product=product
+    )
+
+
+# PRODUCT SHARE PAGE
+@app.route("/product/<int:id>")
+def product_page(id):
+
+    conn = connect_db()
+
+    product = conn.execute(
+        "SELECT * FROM products WHERE id=?",
+        (id,)
+    ).fetchone()
+
+    conn.close()
+
+    if not product:
+        return "Product Not Found"
+
+    return render_template(
+        "product.html",
         product=product
     )
 
