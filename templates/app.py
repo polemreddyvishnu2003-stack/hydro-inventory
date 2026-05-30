@@ -68,6 +68,7 @@ def dashboard():
 
 # ADD PRODUCT
 @app.route("/add", methods=["GET", "POST"])
+@app.route("/add-item", methods=["GET", "POST"])
 def add_item():
 
     if request.method == "POST":
