@@ -57,26 +57,27 @@ button{
 <p><b>Description:</b> {{ product[2] }}</p>
 
 <p><b>Size:</b> {{ product[3] }}</p>
-
 <button type="button" onclick="shareWhatsApp()">
-Share on WhatsApp
+    Share on WhatsApp
 </button>
-
-</div>
-
-<script>
-<a href="https://www.google.com" target="_blank">
-    TEST GOOGLE
-</a>
 
 <script>
 function shareWhatsApp() {
 
-    let url =
-    "https://wa.me/?text=" +
-    encodeURIComponent(window.location.href);
+    const productName = "{{ product[1] }}";
+    const productSize = "{{ product[3] }}";
 
-    window.location.href = url;
+    const message =
+        "HYDRO SPARES DISTRIBUTORS\n\n" +
+        "Product: " + productName + "\n" +
+        "Size: " + productSize + "\n\n" +
+        window.location.href;
+
+    const whatsappUrl =
+        "https://wa.me/?text=" +
+        encodeURIComponent(message);
+
+    window.open(whatsappUrl, "_blank");
 }
 </script>
 
