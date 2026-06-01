@@ -2,62 +2,86 @@
 <html>
 
 <head>
-    <title>Login</title>
 
-    <style>
+<title>{{ product[1] }}</title>
 
-        body{
-            background:#0a1026;
-            font-family:Arial;
-            display:flex;
-            justify-content:center;
-            align-items:center;
-            height:100vh;
-        }
+<style>
 
-        .box{
-            background:white;
-            padding:40px;
-            border-radius:10px;
-            width:300px;
-        }
+body{
+    background:#0f172a;
+    color:white;
+    font-family:Arial;
+    text-align:center;
+    padding:30px;
+}
 
-        input{
-            width:100%;
-            padding:10px;
-            margin-top:10px;
-        }
+.card{
+    max-width:700px;
+    margin:auto;
+    background:#1e293b;
+    padding:30px;
+    border-radius:10px;
+}
 
-        button{
-            width:100%;
-            padding:10px;
-            margin-top:20px;
-            background:blue;
-            color:white;
-            border:none;
-        }
+img{
+    width:300px;
+    border-radius:10px;
+}
 
-    </style>
+button{
+    padding:12px 20px;
+    background:#25D366;
+    border:none;
+    color:white;
+    margin-top:20px;
+    cursor:pointer;
+    border-radius:5px;
+}
+
+</style>
 
 </head>
 
 <body>
 
-<div class="box">
+<div class="card">
 
-<h2>Login</h2>
+<h1>HYDRO SPARES DISTRIBUTORS</h1>
 
-<form method="POST">
+{% if product[4] %}
+<img src="{{ url_for('static', filename='uploads/' + product[4]) }}">
+{% endif %}
 
-<input type="text" name="username" placeholder="Username">
+<h2>{{ product[1] }}</h2>
 
-<input type="password" name="password" placeholder="Password">
+<p><b>Description:</b> {{ product[2] }}</p>
 
-<button type="submit">Login</button>
+<p><b>Size:</b> {{ product[3] }}</p>
 
-</form>
+<button type="button" onclick="shareWhatsApp()">
+Share on WhatsApp
+</button>
 
 </div>
+
+<script>
+
+function shareWhatsApp(){
+
+    let message =
+    "HYDRO SPARES DISTRIBUTORS\n\n" +
+    "Product: {{ product[1] }}\n" +
+    "Size: {{ product[3] }}\n\n" +
+    
+    
+
+    window.open(
+        "https://wa.me/?text=" + encodeURIComponent(message),
+        "_blank"
+    );
+}
+
+</script>
 
 </body>
 </html>
