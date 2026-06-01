@@ -68,30 +68,16 @@ Share on WhatsApp
 <button type="button" onclick="shareWhatsApp()">
     Share on WhatsApp
 </button>
-
 <script>
 function shareWhatsApp() {
 
-    const productName = "{{ product[1] }}";
-    const productSize = "{{ product[3] }}";
+    let url =
+    "https://wa.me/?text=" +
+    encodeURIComponent(window.location.href);
 
-    const message =
-        "HYDRO SPARES DISTRIBUTORS\n\n" +
-        "Product: " + productName + "\n" +
-        "Size: " + productSize + "\n\n" +
-        window.location.href;
-
-    const whatsappUrl =
-        "https://wa.me/?text=" +
-        encodeURIComponent(message);
-
-    window.open(whatsappUrl, "_blank");
+    window.location.href = url;
 }
 </script>
-    <script>
-function shareWhatsApp() {
-    alert("Button clicked");
-}
-</script>
+
 </body>
 </html>
