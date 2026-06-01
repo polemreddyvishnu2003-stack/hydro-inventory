@@ -154,23 +154,20 @@ width="80">
 <td>{{ product[2] }}</td>
 
 <td>{{ product[3] }}</td>
-
 <td>
 
 <a href="/edit/{{ product[0] }}">
+<button class="edit-btn">Edit</button>
+</a>
 
-<button class="edit-btn">
-Edit
+<a href="/product/{{ product[0] }}" target="_blank">
+<button style="background:#25D366;">
+Share
 </button>
-
 </a>
 
 <a href="/delete/{{ product[0] }}">
-
-<button class="delete-btn">
-Delete
-</button>
-
+<button class="delete-btn">Delete</button>
 </a>
 
 </td>
